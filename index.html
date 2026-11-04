@@ -62,7 +62,11 @@
     var c = document.createElement("canvas"); c.width = c.height = px;
     var x = c.getContext("2d"), k = px / 512;
     x.scale(k, k);
-    if (forma === "mascara") forma = "cuadrado";   // maskable: degradado a SANGRE COMPLETA, sin fondo blanco; el launcher de Android lo recorta en círculo
+    if (forma === "mascara") {   // maskable: círculo sobre el MISMO negro del arranque nativo (así, aunque Android use este ícono en el arranque, no se ve ningún cuadro)
+      x.fillStyle = PWA.fondoArranque; x.fillRect(0, 0, 512, 512);
+      x.translate(256, 256); x.scale(.88, .88); x.translate(-256, -256);
+      forma = "circulo";
+    }
     var g = x.createLinearGradient(0, 0, 512, 512);
     g.addColorStop(0, PWA.color1); g.addColorStop(1, PWA.color2);
     x.fillStyle = g; x.beginPath();
@@ -98,8 +102,8 @@
     try {
       var base = location.origin + location.pathname;
       var carpeta = base.replace(/[^\/]*$/, "");
-      // maskable = degradado a sangre completa (Android lo recorta redondo en el launcher); 'any' = círculo con esquinas transparentes (se usa en el arranque sobre fondo negro)
-      var i192 = icono(192, "circulo", 1.05), i512 = icono(512, "circulo", 1.05), imask = icono(512, "mascara", 1);
+      // maskable = círculo sobre el mismo negro del arranque (sin cuadro visible); 'any' = círculo con esquinas transparentes
+      var i192 = icono(192, "circulo", 1.05), i512 = icono(512, "circulo", 1.05), imask = icono(512, "mascara", 1.05);
       var manifest = {
         id: base, name: PWA.nombre, short_name: PWA.nombre, lang: "es",
         start_url: base, scope: carpeta, display: "standalone", orientation: "portrait",
