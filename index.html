@@ -24,7 +24,7 @@
 <style>
   html,body{background:#020617}
   /* Pantalla de arranque de la app instalada: logo REDONDO palpitante (SVG en línea = aparece en el primer dibujo) */
-  #splashApp{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:5;background:#020617;align-items:center;justify-content:center;transition:opacity .7s ease}
+  #splashApp{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:5;background:#ffffff;align-items:center;justify-content:center;transition:opacity .7s ease}
   html.app-inst #splashApp{display:flex}
   #splashApp.fuera{opacity:0;pointer-events:none}
   #splashApp .ico{position:relative;width:132px;height:132px}
@@ -54,7 +54,8 @@
     color2:       "#6d1fd9",    // degradado del ícono: esquina inferior derecha
     colorLatido:  "#4a30e0",    // línea de latido dentro del corazón
     fondoApp:     "#020617",    // color de la pantalla de arranque de la app
-    fondoIcono:   "#ffffff"     // fondo del ícono (el cuadro detrás del círculo)
+    fondoIcono:   "#ffffff",    // fondo del ícono (el cuadro detrás del círculo)
+    fondoArranque:"#ffffff"     // fondo del arranque nativo de Android: igual al del ícono = el cuadro no se ve, solo el círculo
   };
 
   // ---- Dibuja el ícono (corazón con latido) y lo devuelve como imagen PNG ----
@@ -107,7 +108,7 @@
       var manifest = {
         id: base, name: PWA.nombre, short_name: PWA.nombre, lang: "es",
         start_url: base, scope: carpeta, display: "standalone", orientation: "portrait",
-        background_color: PWA.fondoApp, theme_color: PWA.fondoApp,
+        background_color: PWA.fondoArranque, theme_color: PWA.fondoApp,
         icons: [
           { src: i192, sizes: "192x192", type: "image/png", purpose: "any" },
           { src: i512, sizes: "512x512", type: "image/png", purpose: "any" },
