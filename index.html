@@ -101,8 +101,8 @@
     try {
       var base = location.origin + location.pathname;
       var carpeta = base.replace(/[^\/]*$/, "");
-      // maskable = degradado a sangre completa (el celular lo recorta en círculo limpio, sin borde oscuro)
-      var i192 = icono(192, "circulo", 1.05), i512 = icono(512, "circulo", 1.05), imask = icono(512, "cuadrado", .95);
+      // maskable = círculo sobre el MISMO fondo oscuro de la pantalla de arranque: el arranque nativo de Android no muestra ningún cuadro y pasa directo al logo redondo animado
+      var i192 = icono(192, "circulo", 1.05), i512 = icono(512, "circulo", 1.05), imask = icono(512, "mascara", 1.05);
       var manifest = {
         id: base, name: PWA.nombre, short_name: PWA.nombre, lang: "es",
         start_url: base, scope: carpeta, display: "standalone", orientation: "portrait",
