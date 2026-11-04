@@ -77,6 +77,32 @@
   var instalada = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
   if (instalada) document.documentElement.classList.add("app-inst");
 
+  // iPhone con la app instalada: la página queda ~59 px más corta que la pantalla (franja negra abajo)
+  // y la barra de estado tapa los títulos. Se baja el iframe bajo la barra y se estira hasta el borde inferior.
+  if (navigator.standalone === true) {
+    var ajustarIOS = function () {
+      var vertical = window.innerHeight >= window.innerWidth;
+      var total = vertical ? Math.max(screen.width, screen.height) : Math.min(screen.width, screen.height);
+      var arriba = 0;
+      if (vertical) {
+        var sonda = document.createElement("div");
+        sonda.style.cssText = "position:fixed;top:0;left:0;width:0;visibility:hidden;height:env(safe-area-inset-top,0px)";
+        document.body.appendChild(sonda);
+        arriba = Math.max(sonda.offsetHeight, 20);
+        document.body.removeChild(sonda);
+      }
+      var app = document.getElementById("app");
+      if (app) { app.style.top = arriba + "px"; app.style.bottom = "auto"; app.style.height = (total - arriba) + "px"; }
+      ["cargando", "splashApp"].forEach(function (id) {
+        var e = document.getElementById(id);
+        if (e) { e.style.top = "0"; e.style.bottom = "auto"; e.style.height = total + "px"; }
+      });
+    };
+    document.addEventListener("DOMContentLoaded", ajustarIOS);
+    window.addEventListener("resize", ajustarIOS);
+    window.addEventListener("orientationchange", ajustarIOS);
+  }
+
   // AYUDANTE PARA OTROS SISTEMAS: abre esta página con  #icono  al final de la dirección
   // y te muestra la línea del ícono de iPhone lista para copiar y pegar abajo.
   if (location.hash === "#icono") {
