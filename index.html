@@ -24,7 +24,7 @@
 <style>
   html,body{background:#020617}
   /* Pantalla de arranque de la app instalada: logo REDONDO palpitante (SVG en línea = aparece en el primer dibujo) */
-  #splashApp{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:5;background:#ffffff;align-items:center;justify-content:center;transition:opacity .7s ease}
+  #splashApp{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:5;background:#020617;align-items:center;justify-content:center;transition:opacity .7s ease}
   html.app-inst #splashApp{display:flex}
   #splashApp.fuera{opacity:0;pointer-events:none}
   #splashApp .ico{position:relative;width:132px;height:132px}
@@ -54,8 +54,7 @@
     color2:       "#6d1fd9",    // degradado del ícono: esquina inferior derecha
     colorLatido:  "#4a30e0",    // línea de latido dentro del corazón
     fondoApp:     "#020617",    // color de la pantalla de arranque de la app
-    fondoIcono:   "#ffffff",    // fondo del ícono (el cuadro detrás del círculo)
-    fondoArranque:"#ffffff"     // fondo del arranque nativo de Android: igual al del ícono = el cuadro no se ve, solo el círculo
+    fondoArranque:"#020617"     // fondo del arranque nativo de Android: NEGRO (el ícono redondo "any" tiene esquinas transparentes, así solo se ve el círculo)
   };
 
   // ---- Dibuja el ícono (corazón con latido) y lo devuelve como imagen PNG ----
@@ -63,11 +62,7 @@
     var c = document.createElement("canvas"); c.width = c.height = px;
     var x = c.getContext("2d"), k = px / 512;
     x.scale(k, k);
-    if (forma === "mascara") {   // fondo del MISMO color que la pantalla de arranque (así no se ve ningún cuadro) + círculo
-      x.fillStyle = PWA.fondoIcono; x.fillRect(0, 0, 512, 512);
-      x.translate(256, 256); x.scale(.78, .78); x.translate(-256, -256);
-      forma = "circulo";
-    }
+    if (forma === "mascara") forma = "cuadrado";   // maskable: degradado a SANGRE COMPLETA, sin fondo blanco; el launcher de Android lo recorta en círculo
     var g = x.createLinearGradient(0, 0, 512, 512);
     g.addColorStop(0, PWA.color1); g.addColorStop(1, PWA.color2);
     x.fillStyle = g; x.beginPath();
@@ -103,8 +98,8 @@
     try {
       var base = location.origin + location.pathname;
       var carpeta = base.replace(/[^\/]*$/, "");
-      // maskable = círculo sobre el MISMO fondo oscuro de la pantalla de arranque: el arranque nativo de Android no muestra ningún cuadro y pasa directo al logo redondo animado
-      var i192 = icono(192, "circulo", 1.05), i512 = icono(512, "circulo", 1.05), imask = icono(512, "mascara", 1.05);
+      // maskable = degradado a sangre completa (Android lo recorta redondo en el launcher); 'any' = círculo con esquinas transparentes (se usa en el arranque sobre fondo negro)
+      var i192 = icono(192, "circulo", 1.05), i512 = icono(512, "circulo", 1.05), imask = icono(512, "mascara", 1);
       var manifest = {
         id: base, name: PWA.nombre, short_name: PWA.nombre, lang: "es",
         start_url: base, scope: carpeta, display: "standalone", orientation: "portrait",
