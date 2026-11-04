@@ -101,8 +101,8 @@
     try {
       var base = location.origin + location.pathname;
       var carpeta = base.replace(/[^\/]*$/, "");
-      // Todos los íconos llevan el fondo del color de la app: ningún cuadro distinto aparece al abrir (Android)
-      var i192 = icono(192, "mascara", 1.05), i512 = icono(512, "mascara", 1.05);
+      // maskable = degradado a sangre completa (el celular lo recorta en círculo limpio, sin borde oscuro)
+      var i192 = icono(192, "circulo", 1.05), i512 = icono(512, "circulo", 1.05), imask = icono(512, "cuadrado", .95);
       var manifest = {
         id: base, name: PWA.nombre, short_name: PWA.nombre, lang: "es",
         start_url: base, scope: carpeta, display: "standalone", orientation: "portrait",
@@ -110,7 +110,7 @@
         icons: [
           { src: i192, sizes: "192x192", type: "image/png", purpose: "any" },
           { src: i512, sizes: "512x512", type: "image/png", purpose: "any" },
-          { src: i512, sizes: "512x512", type: "image/png", purpose: "maskable" }
+          { src: imask, sizes: "512x512", type: "image/png", purpose: "maskable" }
         ]
       };
       link("manifest", URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" })));
@@ -132,8 +132,27 @@
   /* Marco del sistema: ocupa TODA la pantalla hasta el borde inferior (sin franja negra).
      En iPhone instalado solo se baja por debajo de la barra de estado / isla dinámica. */
   #marco{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--fondo)}
-  html.app-ios #marco{top:env(safe-area-inset-top,0px);left:env(safe-area-inset-left,0px);right:env(safe-area-inset-right,0px)}
+  html.app-ios #marco{top:calc(env(safe-area-inset-top,0px) + 10px);left:env(safe-area-inset-left,0px);right:env(safe-area-inset-right,0px)}
   #app{display:block;width:100%;height:100%;border:0;background:var(--fondo)}
+  /* Pie de marca (solo iPhone instalado): cubre la franja de abajo con una animación digital */
+  #pieSired{display:none;position:fixed;left:0;right:0;bottom:0;height:58px;z-index:3;pointer-events:none;overflow:hidden;
+    background:linear-gradient(180deg,#050b24 0%,#020617 100%);border-top:1px solid rgba(34,211,238,.35);
+    align-items:center;justify-content:center;gap:10px;font-family:'Orbitron',system-ui,sans-serif}
+  html.app-ios #pieSired{display:flex}
+  #pieSired::before{content:"";position:absolute;top:0;left:-40%;width:40%;height:100%;
+    background:linear-gradient(90deg,transparent,rgba(34,211,238,.28),transparent);animation:barridoPie 2.6s ease-in-out infinite}
+  @keyframes barridoPie{to{left:100%}}
+  #pieSired .pt{width:7px;height:7px;border-radius:50%;background:#22d3ee;box-shadow:0 0 10px #22d3ee;animation:ptPie 1.2s ease-in-out infinite}
+  #pieSired .pt:last-child{animation-delay:.6s;background:#8b5cf6;box-shadow:0 0 10px #8b5cf6}
+  @keyframes ptPie{50%{transform:scale(1.7);opacity:.5}}
+  #pieSired .tx{position:relative;font-size:11px;font-weight:800;letter-spacing:.34em;padding-left:.34em;color:transparent;
+    background:linear-gradient(100deg,#a5f3fc,#22d3ee,#3b82f6,#8b5cf6,#e9d5ff,#22d3ee);background-size:250% 100%;
+    -webkit-background-clip:text;background-clip:text;animation:flujoPie 3.5s linear infinite;filter:drop-shadow(0 0 6px rgba(34,211,238,.6))}
+  @keyframes flujoPie{to{background-position:-250% 0}}
+  #pieSired .bin{position:absolute;left:0;right:0;bottom:4px;text-align:center;font-size:7px;letter-spacing:.5em;color:rgba(34,211,238,.35);animation:binPie 1.6s steps(2) infinite}
+  @keyframes binPie{50%{opacity:.25}}
+  @media (prefers-reduced-motion:reduce){#pieSired::before,#pieSired .pt,#pieSired .tx,#pieSired .bin{animation:none}}
+
 
   /* ===== PANTALLA DE CARGA ===== */
   #cargando{position:fixed;inset:0;z-index:2;overflow:hidden;background:radial-gradient(ellipse at 50% 42%,#0b1a3d 0%,#050b24 45%,#020617 100%);
@@ -250,6 +269,7 @@
     <small id="ayuda">Si tarda mucho, <a id="directo" href="#">abrir directamente</a></small>
   </div>
 </div>
+<div id="pieSired" aria-hidden="true"><i class="pt"></i><span class="tx">TECNOLOGÍA SIRED</span><i class="pt"></i><span class="bin">0110 1001 0101 1100 0011</span></div>
 <div id="marco"><iframe id="app" title="Aplicación" allow="clipboard-write; web-share; fullscreen" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
 
 <noscript>Esta página necesita JavaScript activado.</noscript>
