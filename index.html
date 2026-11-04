@@ -77,30 +77,76 @@
   var instalada = (window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
   if (instalada) document.documentElement.classList.add("app-inst");
 
-  // iPhone con la app instalada: la página queda ~59 px más corta que la pantalla (franja negra abajo)
-  // y la barra de estado tapa los títulos. Se baja el iframe bajo la barra y se estira hasta el borde inferior.
+  // iPhone con la app instalada: iOS reporta mal el alto al arrancar (la página queda más corta que la
+  // pantalla = franja negra abajo) y la barra de estado tapa los títulos. Aquí se mide la pantalla real,
+  // se baja el sistema bajo la barra de estado y se estira hasta el borde inferior. Se recalcula varias
+  // veces porque iOS corrige sus medidas unos instantes DESPUÉS de abrir la app.
   if (navigator.standalone === true) {
-    var ajustarIOS = function () {
-      var vertical = window.innerHeight >= window.innerWidth;
-      var total = vertical ? Math.max(screen.width, screen.height) : Math.min(screen.width, screen.height);
-      var arriba = 0;
-      if (vertical) {
-        var sonda = document.createElement("div");
-        sonda.style.cssText = "position:fixed;top:0;left:0;width:0;visibility:hidden;height:env(safe-area-inset-top,0px)";
-        document.body.appendChild(sonda);
-        arriba = Math.max(sonda.offsetHeight, 20);
-        document.body.removeChild(sonda);
-      }
-      var app = document.getElementById("app");
-      if (app) { app.style.top = arriba + "px"; app.style.bottom = "auto"; app.style.height = (total - arriba) + "px"; }
-      ["cargando", "splashApp"].forEach(function (id) {
-        var e = document.getElementById(id);
-        if (e) { e.style.top = "0"; e.style.bottom = "auto"; e.style.height = total + "px"; }
-      });
+    document.documentElement.classList.add("app-ios");
+    var sonda = null, ultimo = "";
+    // Alto de la barra de estado si iOS no lo informa (respaldo según el modelo de iPhone)
+    var barraPorModelo = function (alto) {
+      if (alto >= 874) return 62;                       // iPhone 16 Pro / Pro Max y similares
+      if (alto === 852 || alto === 932) return 59;      // iPhone 14 Pro/15/16 y Max
+      if (alto >= 812) return 47;                       // iPhone con notch (X a 14)
+      return 20;                                        // iPhone con botón (SE, 8...)
     };
-    document.addEventListener("DOMContentLoaded", ajustarIOS);
-    window.addEventListener("resize", ajustarIOS);
-    window.addEventListener("orientationchange", ajustarIOS);
+    var ajustarIOS = function () {
+      var lado1 = Math.min(screen.width, screen.height), lado2 = Math.max(screen.width, screen.height);
+      var app = document.getElementById("app");
+      if (!app || !document.body) return;
+      var vertical = window.innerHeight >= window.innerWidth;
+      var tablet = lado1 >= 600;                        // iPad: se deja el comportamiento normal
+      var elems = ["cargando", "splashApp"].map(function (id) { return document.getElementById(id); });
+      if (!vertical || tablet) {                        // horizontal o iPad: sin ajustes especiales
+        [app].concat(elems).forEach(function (e) { if (e) { e.style.top = e.style.bottom = e.style.height = ""; } });
+        document.documentElement.style.height = document.body.style.height = "";
+        return;
+      }
+      if (!sonda) {
+        sonda = document.createElement("div");
+        sonda.style.cssText = "position:fixed;top:0;left:0;width:0;visibility:hidden;pointer-events:none;height:env(safe-area-inset-top,0px)";
+        document.body.appendChild(sonda);
+      }
+      var arriba = sonda.offsetHeight;
+      if (!arriba || arriba < 10) arriba = barraPorModelo(lado2);
+      // alto total real = el mayor entre lo que mide la pantalla y lo que mide la página
+      var vv = window.visualViewport ? Math.round(window.visualViewport.height + window.visualViewport.offsetTop) : 0;
+      var total = Math.max(lado2, window.innerHeight, vv);
+      var firma = arriba + "|" + total;
+      if (firma === ultimo) return;
+      ultimo = firma;
+      document.documentElement.style.height = document.body.style.height = total + "px";
+      app.style.top = arriba + "px"; app.style.bottom = "auto"; app.style.height = (total - arriba) + "px";
+      elems.forEach(function (e) { if (e) { e.style.top = "0"; e.style.bottom = "auto"; e.style.height = total + "px"; } });
+    };
+    var reajustar = function () { ultimo = ""; ajustarIOS(); };
+    document.addEventListener("DOMContentLoaded", function () {
+      reajustar();
+      [80, 300, 800, 1600, 3000].forEach(function (ms) { setTimeout(reajustar, ms); });
+    });
+    window.addEventListener("load", reajustar);
+    window.addEventListener("pageshow", reajustar);
+    window.addEventListener("resize", reajustar);
+    window.addEventListener("orientationchange", function () { setTimeout(reajustar, 120); });
+    window.addEventListener("focus", reajustar);
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) reajustar(); });
+    if (window.visualViewport) window.visualViewport.addEventListener("resize", reajustar);
+
+    // AYUDANTE: abre la app con  #medidas  al final de la dirección para ver las medidas reales de tu iPhone
+    if (location.hash === "#medidas") {
+      window.addEventListener("load", function () {
+        var d = document.createElement("div");
+        d.style.cssText = "position:fixed;z-index:99;left:6px;right:6px;bottom:90px;padding:8px;background:rgba(0,0,0,.85);color:#0f0;font:11px monospace;border-radius:8px;pointer-events:none";
+        document.body.appendChild(d);
+        setInterval(function () {
+          var a = document.getElementById("app");
+          d.textContent = "screen " + screen.width + "x" + screen.height + " | inner " + innerWidth + "x" + innerHeight +
+            " | vv " + (window.visualViewport ? Math.round(window.visualViewport.height) : "-") +
+            " | sonda " + (sonda ? sonda.offsetHeight : "-") + " | iframe top " + (a ? a.style.top : "") + " h " + (a ? a.style.height : "");
+        }, 700);
+      });
+    }
   }
 
   // AYUDANTE PARA OTROS SISTEMAS: abre esta página con  #icono  al final de la dirección
@@ -150,6 +196,8 @@
   :root{--cy:#22d3ee;--az:#2563eb;--vi:#8b5cf6;--fondo:#020617}
   html,body{margin:0;height:100%;background:var(--fondo);overflow:hidden}
   #app{position:fixed;inset:0;width:100%;height:100%;border:0;background:var(--fondo)}
+  html.app-ios,html.app-ios body{background:var(--fondo);-webkit-text-size-adjust:100%}
+  html.app-ios #app{left:0;right:0;width:100%;max-width:100%}
 
   /* ===== PANTALLA DE CARGA ===== */
   #cargando{position:fixed;inset:0;z-index:2;overflow:hidden;background:radial-gradient(ellipse at 50% 42%,#0b1a3d 0%,#050b24 45%,#020617 100%);
