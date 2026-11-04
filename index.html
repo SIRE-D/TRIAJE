@@ -5,6 +5,11 @@
 <title>SIRED</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#020617">
+<!-- App instalada: estos metas DEBEN ser estáticos (iOS los lee antes de dibujar). black-translucent = pantalla completa real, sin franja negra -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TRIAJE">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <!-- Ícono de la pestaña (SIRED · salud digital). Para cambiarlo, reemplaza esta línea. -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%2322d3ee%22/%3E%3Cstop offset=%22.55%22 stop-color=%22%232563eb%22/%3E%3Cstop offset=%221%22 stop-color=%22%236d28d9%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22c%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23fff%22/%3E%3Cstop offset=%221%22 stop-color=%22%23cffafe%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%2264%22 height=%2264%22 rx=%2215%22 fill=%22url(%23g)%22/%3E%3Cpath d=%22M25 11h14a3 3 0 0 1 3 3v11h11a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H42v11a3 3 0 0 1-3 3H25a3 3 0 0 1-3-3V39H11a3 3 0 0 1-3-3v-8a3 3 0 0 1 3-3h11V14a3 3 0 0 1 3-3z%22 fill=%22url(%23c)%22/%3E%3Cpath d=%22M8 33h13l4-8 6 15 5-11 3 4h17%22 fill=%22none%22 stroke=%22%230b3b8f%22 stroke-width=%223.4%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%2253%22 cy=%2219%22 r=%223%22 fill=%22%23a5f3fc%22/%3E%3C/svg%3E ">
 
@@ -18,18 +23,29 @@
 <link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,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">
 <style>
   html,body{background:#020617}
-  /* Pantalla de arranque de la app instalada: ícono circular palpitante (solo si está instalada) */
-  #splashApp{display:none;position:fixed;inset:0;z-index:5;background:var(--fondo,#020617);align-items:center;justify-content:center;transition:opacity .7s ease}
+  /* Pantalla de arranque de la app instalada: logo REDONDO palpitante (SVG en línea = aparece en el primer dibujo) */
+  #splashApp{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:5;background:#020617;align-items:center;justify-content:center;transition:opacity .7s ease}
   html.app-inst #splashApp{display:flex}
   #splashApp.fuera{opacity:0;pointer-events:none}
   #splashApp .ico{position:relative;width:132px;height:132px}
-  #splashApp .ico img{display:block;width:100%;height:100%;border-radius:50%;box-shadow:0 0 30px rgba(109,31,217,.6);animation:latidoApp 1.3s ease-in-out infinite}
+  #splashApp .ico svg{display:block;width:100%;height:100%;border-radius:50%;box-shadow:0 0 30px rgba(109,31,217,.6);animation:latidoApp 1.3s ease-in-out infinite}
   #splashApp .ico::before,#splashApp .ico::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid rgba(139,92,246,.75);animation:ondaApp 1.3s ease-out infinite}
   #splashApp .ico::after{animation-delay:.4s}
   @keyframes latidoApp{0%{transform:scale(1)}14%{transform:scale(1.15)}28%{transform:scale(1)}42%{transform:scale(1.09)}70%,100%{transform:scale(1)}}
   @keyframes ondaApp{0%{transform:scale(1);opacity:.75}100%{transform:scale(1.9);opacity:0}}
-  @media (prefers-reduced-motion:reduce){#splashApp .ico img,#splashApp .ico::before,#splashApp .ico::after{animation:none}}
+  @media (prefers-reduced-motion:reduce){#splashApp .ico svg,#splashApp .ico::before,#splashApp .ico::after{animation:none}}
 </style>
+<!-- 1) Detecta lo antes posible si está abierta como app instalada (antes del primer dibujo) -->
+<script>
+(function () {
+  var h = document.documentElement;
+  var st = !!(window.matchMedia && (matchMedia("(display-mode: standalone)").matches || matchMedia("(display-mode: fullscreen)").matches));
+  var ios = navigator.standalone === true;
+  if (st || ios) h.classList.add("app-inst");
+  if (ios) h.classList.add("app-ios");
+})();
+</script>
+<!-- 2) Íconos y manifest: se generan DESPUÉS del primer dibujo para no retrasar el arranque -->
 <script>
 (function () {
   var PWA = {
@@ -45,7 +61,7 @@
     var c = document.createElement("canvas"); c.width = c.height = px;
     var x = c.getContext("2d"), k = px / 512;
     x.scale(k, k);
-    if (forma === "mascara") {   // cuadrado del color de la app + círculo del ícono en la zona segura
+    if (forma === "mascara") {   // fondo del MISMO color que la pantalla de arranque (así no se ve ningún cuadro) + círculo
       x.fillStyle = PWA.fondoApp; x.fillRect(0, 0, 512, 512);
       x.translate(256, 256); x.scale(.78, .78); x.translate(-256, -256);
       forma = "circulo";
@@ -55,9 +71,6 @@
     x.fillStyle = g; x.beginPath();
     if (forma === "circulo") {
       x.arc(256, 256, 256, 0, Math.PI * 2); x.closePath();
-    } else if (forma === "redondo") {
-      var r = 112; x.moveTo(r, 0); x.arcTo(512, 0, 512, 512, r); x.arcTo(512, 512, 0, 512, r);
-      x.arcTo(0, 512, 0, 0, r); x.arcTo(0, 0, 512, 0, r); x.closePath();
     } else { x.rect(0, 0, 512, 512); }
     x.fill();
     x.translate(256, 256); x.scale(glifo, glifo); x.translate(-256, -256);
@@ -72,90 +85,9 @@
     return c.toDataURL("image/png");
   }
 
-  function meta(n, v) { var m = document.createElement("meta"); m.name = n; m.content = v; document.head.appendChild(m); }
-  function link(rel, href, extra) {
-    var l = document.createElement("link"); l.rel = rel; l.href = href;
-    if (extra) for (var k in extra) l.setAttribute(k, extra[k]);
-    document.head.appendChild(l);
-  }
-
-  // ¿Está abierta como app instalada? (Android: standalone · iPhone: navigator.standalone)
-  var modoApp = !!(window.matchMedia && matchMedia("(display-mode: standalone)").matches);
-  var instalada = modoApp || navigator.standalone === true;
-  if (instalada) document.documentElement.classList.add("app-inst");
-
-  // iPhone con la app instalada: iOS reporta mal el alto al arrancar (la página queda más corta que la
-  // pantalla = franja negra abajo) y la barra de estado tapa los títulos. Aquí se mide la pantalla real,
-  // se baja el sistema bajo la barra de estado y se estira hasta el borde inferior. Se recalcula varias
-  // veces porque iOS corrige sus medidas unos instantes DESPUÉS de abrir la app.
-  if (navigator.standalone === true && modoApp) {   // solo app instalada en iPhone (nunca en una pestaña del navegador)
-    document.documentElement.classList.add("app-ios");
-    var sonda = null, ultimo = "";
-    var ajustarIOS = function () {
-      var lado1 = Math.min(screen.width, screen.height), lado2 = Math.max(screen.width, screen.height);
-      var app = document.getElementById("app");
-      if (!app || !document.body) return;
-      var vertical = window.innerHeight >= window.innerWidth;
-      var tablet = lado1 >= 600;                        // iPad: se deja el comportamiento normal
-      var elems = ["cargando", "splashApp"].map(function (id) { return document.getElementById(id); });
-      if (!vertical || tablet) {                        // horizontal o iPad: sin ajustes especiales
-        [app].concat(elems).forEach(function (e) { if (e) { e.style.top = e.style.bottom = e.style.height = ""; } });
-        document.documentElement.style.height = document.body.style.height = "";
-        return;
-      }
-      if (!sonda) {
-        sonda = document.createElement("div");
-        sonda.style.cssText = "position:fixed;top:0;left:0;width:0;visibility:hidden;pointer-events:none;height:env(safe-area-inset-top,0px)";
-        document.body.appendChild(sonda);
-      }
-      var arriba = sonda.offsetHeight;
-      if (arriba < 10) {                                 // iOS ya coloca el sistema bajo la barra: no se toca nada
-        ultimo = "";
-        [app].concat(elems).forEach(function (e) { if (e) { e.style.top = e.style.bottom = e.style.height = ""; } });
-        document.documentElement.style.height = document.body.style.height = "";
-        return;
-      }
-      // alto total real = el mayor entre lo que mide la pantalla y lo que mide la página
-      var vv = window.visualViewport ? Math.round(window.visualViewport.height + window.visualViewport.offsetTop) : 0;
-      var total = Math.max(lado2, window.innerHeight, vv);
-      var firma = arriba + "|" + total;
-      if (firma === ultimo) return;
-      ultimo = firma;
-      document.documentElement.style.height = document.body.style.height = total + "px";
-      app.style.top = arriba + "px"; app.style.bottom = "auto"; app.style.height = (total - arriba) + "px";
-      elems.forEach(function (e) { if (e) { e.style.top = "0"; e.style.bottom = "auto"; e.style.height = total + "px"; } });
-    };
-    var reajustar = function () { ultimo = ""; ajustarIOS(); };
-    document.addEventListener("DOMContentLoaded", function () {
-      reajustar();
-      [80, 300, 800, 1600, 3000].forEach(function (ms) { setTimeout(reajustar, ms); });
-    });
-    window.addEventListener("load", reajustar);
-    window.addEventListener("pageshow", reajustar);
-    window.addEventListener("resize", reajustar);
-    window.addEventListener("orientationchange", function () { setTimeout(reajustar, 120); });
-    window.addEventListener("focus", reajustar);
-    document.addEventListener("visibilitychange", function () { if (!document.hidden) reajustar(); });
-    if (window.visualViewport) window.visualViewport.addEventListener("resize", reajustar);
-
-    // AYUDANTE: abre la app con  #medidas  al final de la dirección para ver las medidas reales de tu iPhone
-    if (location.hash === "#medidas") {
-      window.addEventListener("load", function () {
-        var d = document.createElement("div");
-        d.style.cssText = "position:fixed;z-index:99;left:6px;right:6px;bottom:90px;padding:8px;background:rgba(0,0,0,.85);color:#0f0;font:11px monospace;border-radius:8px;pointer-events:none";
-        document.body.appendChild(d);
-        setInterval(function () {
-          var a = document.getElementById("app");
-          d.textContent = "screen " + screen.width + "x" + screen.height + " | inner " + innerWidth + "x" + innerHeight +
-            " | vv " + (window.visualViewport ? Math.round(window.visualViewport.height) : "-") +
-            " | sonda " + (sonda ? sonda.offsetHeight : "-") + " | iframe top " + (a ? a.style.top : "") + " h " + (a ? a.style.height : "");
-        }, 700);
-      });
-    }
-  }
+  function link(rel, href) { var l = document.createElement("link"); l.rel = rel; l.href = href; document.head.appendChild(l); }
 
   // AYUDANTE PARA OTROS SISTEMAS: abre esta página con  #icono  al final de la dirección
-  // y te muestra la línea del ícono de iPhone lista para copiar y pegar abajo.
   if (location.hash === "#icono") {
     window.addEventListener("load", function () {
       var t = document.createElement("textarea");
@@ -165,31 +97,27 @@
     });
   }
 
-  try {
-    var base = location.origin + location.pathname;               // dirección de esta página
-    var carpeta = base.replace(/[^\/]*$/, "");
-    var i192 = icono(192, "circulo", 1.05), i512 = icono(512, "circulo", 1.05), imask = icono(512, "mascara", 1.05);
-    window.__PWA_ICONO = icono(256, "circulo", 1.05);   // ícono circular para la pantalla de arranque
-
-    // iPhone / iPad (Compartir > Añadir a pantalla de inicio)
-    meta("apple-mobile-web-app-capable", "yes");
-    meta("mobile-web-app-capable", "yes");
-    meta("apple-mobile-web-app-title", PWA.nombre);
-    meta("apple-mobile-web-app-status-bar-style", "black");   // barra de estado negra, el sistema empieza justo debajo
-
-    // Android (Chrome > Instalar aplicación): el manifest se crea aquí mismo
-    var manifest = {
-      id: base, name: PWA.nombre, short_name: PWA.nombre, lang: "es",
-      start_url: base, scope: carpeta, display: "standalone", orientation: "portrait",
-      background_color: PWA.fondoApp, theme_color: PWA.fondoApp,
-      icons: [
-        { src: i192,  sizes: "192x192", type: "image/png", purpose: "any" },
-        { src: i512,  sizes: "512x512", type: "image/png", purpose: "any" },
-        { src: imask, sizes: "512x512", type: "image/png", purpose: "maskable" }
-      ]
-    };
-    link("manifest", URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" })));
-  } catch (e) { /* si algo falla, la página web sigue funcionando igual */ }
+  function montar() {
+    try {
+      var base = location.origin + location.pathname;
+      var carpeta = base.replace(/[^\/]*$/, "");
+      // Todos los íconos llevan el fondo del color de la app: ningún cuadro distinto aparece al abrir (Android)
+      var i192 = icono(192, "mascara", 1.05), i512 = icono(512, "mascara", 1.05);
+      var manifest = {
+        id: base, name: PWA.nombre, short_name: PWA.nombre, lang: "es",
+        start_url: base, scope: carpeta, display: "standalone", orientation: "portrait",
+        background_color: PWA.fondoApp, theme_color: PWA.fondoApp,
+        icons: [
+          { src: i192, sizes: "192x192", type: "image/png", purpose: "any" },
+          { src: i512, sizes: "512x512", type: "image/png", purpose: "any" },
+          { src: i512, sizes: "512x512", type: "image/png", purpose: "maskable" }
+        ]
+      };
+      link("manifest", URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" })));
+    } catch (e) { /* si algo falla, la página web sigue funcionando igual */ }
+  }
+  function tarde() { requestAnimationFrame(function () { setTimeout(montar, 50); }); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tarde); else tarde();
 })();
 </script>
 <!-- ===================== FIN BLOQUE PWA ===================== -->
@@ -200,10 +128,12 @@
 <noscript><link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800;900&family=Rajdhani:wght@500;600&display=swap" rel="stylesheet"></noscript>
 <style>
   :root{--cy:#22d3ee;--az:#2563eb;--vi:#8b5cf6;--fondo:#020617}
-  html,body{margin:0;height:100%;background:var(--fondo);overflow:hidden}
-  #app{position:fixed;inset:0;width:100%;height:100%;border:0;background:var(--fondo)}
-  html.app-ios,html.app-ios body{background:var(--fondo);-webkit-text-size-adjust:100%}
-  html.app-ios #app{left:0;right:0;width:100%;max-width:100%}
+  html,body{margin:0;height:100%;background:var(--fondo);overflow:hidden;overscroll-behavior:none;-webkit-text-size-adjust:100%}
+  /* Marco del sistema: ocupa TODA la pantalla hasta el borde inferior (sin franja negra).
+     En iPhone instalado solo se baja por debajo de la barra de estado / isla dinámica. */
+  #marco{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--fondo)}
+  html.app-ios #marco{top:env(safe-area-inset-top,0px);left:env(safe-area-inset-left,0px);right:env(safe-area-inset-right,0px)}
+  #app{display:block;width:100%;height:100%;border:0;background:var(--fondo)}
 
   /* ===== PANTALLA DE CARGA ===== */
   #cargando{position:fixed;inset:0;z-index:2;overflow:hidden;background:radial-gradient(ellipse at 50% 42%,#0b1a3d 0%,#050b24 45%,#020617 100%);
@@ -286,12 +216,13 @@
 </head>
 <body>
 <!-- BLOQUE PWA (pantalla de arranque circular, solo app instalada) -->
-<div id="splashApp" aria-hidden="true"><div class="ico"><img id="splashImg" alt=""></div></div>
+<div id="splashApp" aria-hidden="true"><div class="ico">
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gsp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2b45e8"/><stop offset="1" stop-color="#6d1fd9"/></linearGradient></defs><circle cx="256" cy="256" r="256" fill="url(#gsp)"/><g transform="translate(256 256) scale(1.05) translate(-256 -256)"><path fill="#fff" d="M256 392C150 318 108 268 108 214C108 172 140 144 180 144C212 144 238 160 256 188C274 160 300 144 332 144C372 144 404 172 404 214C404 268 362 318 256 392Z"/><path fill="none" stroke="#4a30e0" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" d="M140 254L210 254L236 206L268 300L296 242L372 242"/></g></svg>
+</div></div>
 <script>
   (function () {
-    var im = document.getElementById("splashImg"), sp = document.getElementById("splashApp");
-    if (!document.documentElement.classList.contains("app-inst") || !window.__PWA_ICONO) return;
-    im.src = window.__PWA_ICONO;
+    var sp = document.getElementById("splashApp");
+    if (!document.documentElement.classList.contains("app-inst")) return;
     setTimeout(function () { sp.classList.add("fuera"); setTimeout(function () { sp.style.display = "none"; }, 800); }, 2200);
   })();
 </script>
@@ -319,7 +250,7 @@
     <small id="ayuda">Si tarda mucho, <a id="directo" href="#">abrir directamente</a></small>
   </div>
 </div>
-<iframe id="app" title="Aplicación" allow="clipboard-write; web-share; fullscreen" referrerpolicy="no-referrer-when-downgrade"></iframe>
+<div id="marco"><iframe id="app" title="Aplicación" allow="clipboard-write; web-share; fullscreen" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
 
 <noscript>Esta página necesita JavaScript activado.</noscript>
 <script>
