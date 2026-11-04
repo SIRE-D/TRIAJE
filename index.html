@@ -130,7 +130,7 @@
   :root{--cy:#22d3ee;--az:#2563eb;--vi:#8b5cf6;--fondo:#020617}
   html,body{margin:0;height:100%;background:var(--fondo);overflow:hidden;overscroll-behavior:none;-webkit-text-size-adjust:100%}
   /* Alto del pie de marca: franja de contenido + zona segura inferior (iPhone). Android = 0 de zona segura. */
-  :root{--pie-txt:44px;--pie-h:calc(var(--pie-txt) + env(safe-area-inset-bottom,0px))}
+  :root{--pie-txt:30px;--pie-h:calc(var(--pie-txt) + env(safe-area-inset-bottom,0px))}
   /* Marco del sistema: ahora TERMINA donde empieza el pie, así el menú flotante de la app
      queda siempre por encima del pie, sin que nada lo tape ni lo roce. */
   #marco{position:fixed;top:0;left:0;right:0;bottom:var(--pie-h);background:var(--fondo)}
@@ -139,24 +139,30 @@
   #app{display:block;width:100%;height:100%;border:0;background:var(--fondo)}
   /* Pie de marca (iPhone y Android): ocupa la franja inferior completa, incluida la zona segura = sin línea negra */
   #pieSired{position:fixed;left:0;right:0;bottom:0;height:var(--pie-h);z-index:3;pointer-events:none;overflow:hidden;
-    background:linear-gradient(180deg,#06102e 0%,#020617 100%);border-top:1px solid rgba(34,211,238,.45);
-    box-shadow:0 -1px 14px rgba(34,211,238,.22);font-family:'Orbitron',system-ui,sans-serif}
+    background:linear-gradient(180deg,#06102e 0%,#020617 100%);font-family:'Orbitron',system-ui,sans-serif}
   #pieSired canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
   #pieSired .cont{position:absolute;left:0;right:0;top:0;height:var(--pie-txt);display:flex;align-items:center;justify-content:center;gap:10px}
-  #pieSired .cont::before{content:"";position:absolute;left:50%;top:50%;width:min(86%,330px);height:30px;transform:translate(-50%,-50%);
+  #pieSired .cont::before{content:"";position:absolute;left:50%;top:50%;width:min(86%,300px);height:22px;transform:translate(-50%,-50%);
     background:radial-gradient(ellipse at center,rgba(2,6,23,.92) 0%,rgba(2,6,23,.82) 45%,rgba(2,6,23,0) 100%)}
-  #pieSired::after{content:"";position:absolute;top:0;left:-40%;width:40%;height:100%;
-    background:linear-gradient(90deg,transparent,rgba(34,211,238,.20),transparent);animation:barridoPie 3s ease-in-out infinite}
-  @keyframes barridoPie{to{left:100%}}
-  #pieSired .pt{position:relative;width:7px;height:7px;border-radius:50%;background:#22d3ee;box-shadow:0 0 10px #22d3ee;animation:ptPie 1.2s ease-in-out infinite}
+  /* Línea divisoria app/pie: filamento tenue + haz de energía que la recorre + resplandor hacia arriba */
+  #pieSired .lin{position:absolute;left:0;right:0;top:0;height:2px;z-index:2;
+    background:linear-gradient(90deg,rgba(34,211,238,.15),rgba(99,102,241,.55),rgba(34,211,238,.15));overflow:hidden}
+  #pieSired .lin::before{content:"";position:absolute;top:0;left:-35%;width:35%;height:100%;
+    background:linear-gradient(90deg,transparent,#67e8f9 45%,#fff 55%,#a78bfa,transparent);
+    filter:drop-shadow(0 0 4px #22d3ee);animation:haz 2.8s cubic-bezier(.5,0,.5,1) infinite}
+  @keyframes haz{to{left:100%}}
+  #pieSired .res{position:absolute;left:0;right:0;top:0;height:14px;z-index:1;
+    background:linear-gradient(180deg,rgba(34,211,238,.16),transparent);animation:resp 2.8s ease-in-out infinite}
+  @keyframes resp{50%{opacity:.45}}
+  #pieSired .pt{position:relative;width:6px;height:6px;border-radius:50%;background:#22d3ee;box-shadow:0 0 10px #22d3ee;animation:ptPie 1.2s ease-in-out infinite}
   #pieSired .pt:last-child{animation-delay:.6s;background:#8b5cf6;box-shadow:0 0 10px #8b5cf6}
   @keyframes ptPie{50%{transform:scale(1.7);opacity:.5}}
-  #pieSired .tx{position:relative;font-size:11px;font-weight:800;letter-spacing:.34em;padding-left:.34em;color:transparent;white-space:nowrap;
+  #pieSired .tx{position:relative;font-size:10px;font-weight:800;letter-spacing:.32em;padding-left:.34em;color:transparent;white-space:nowrap;
     background:linear-gradient(100deg,#a5f3fc,#22d3ee,#3b82f6,#8b5cf6,#e9d5ff,#22d3ee);background-size:250% 100%;
     -webkit-background-clip:text;background-clip:text;animation:flujoPie 3.5s linear infinite;filter:drop-shadow(0 0 6px rgba(34,211,238,.6))}
   @keyframes flujoPie{to{background-position:-250% 0}}
   @media (max-width:340px){#pieSired .tx{font-size:10px;letter-spacing:.24em}}
-  @media (prefers-reduced-motion:reduce){#pieSired::after,#pieSired .pt,#pieSired .tx{animation:none}}
+  @media (prefers-reduced-motion:reduce){#pieSired .lin::before,#pieSired .res,#pieSired .pt,#pieSired .tx{animation:none}}
 
 
   /* ===== PANTALLA DE CARGA ===== */
@@ -274,7 +280,7 @@
     <small id="ayuda">Si tarda mucho, <a id="directo" href="#">abrir directamente</a></small>
   </div>
 </div>
-<div id="pieSired" aria-hidden="true"><canvas id="pieFx"></canvas><div class="cont"><i class="pt"></i><span class="tx">TECNOLOGÍA SIRED</span><i class="pt"></i></div></div>
+<div id="pieSired" aria-hidden="true"><canvas id="pieFx"></canvas><i class="res"></i><i class="lin"></i><div class="cont"><i class="pt"></i><span class="tx" id="pieTxt">TECNOLOGÍA SIRED</span><i class="pt"></i></div></div>
 <div id="marco"><iframe id="app" title="Aplicación" allow="clipboard-write; web-share; fullscreen" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
 
 <noscript>Esta página necesita JavaScript activado.</noscript>
@@ -292,6 +298,13 @@
   // 3) Texto de la PANTALLA DE CARGA (la palabra grande y brillante):
   var TEXTO_CARGA = "SIRED";
 
+  // 4) PIE DE MARCA (franja inferior animada):
+  var PIE = {
+    mostrar: true,                  // false = oculta el pie por completo
+    texto:   "TECNOLOGÍA SIRED",    // texto del pie
+    alto:    30                     // alto en px (sin contar la zona segura del iPhone): 24 muy fino · 30 normal · 40 grueso
+  };
+
   // =====================================================================
   //  No toques nada de aquí para abajo
   // =====================================================================
@@ -301,6 +314,14 @@
   $("nombre").textContent = texto;
   $("marca").setAttribute("data-t", texto);
   $("reflejo").textContent = texto;
+
+  /* ---------- Aplica la configuración del pie ---------- */
+  (function () {
+    var r = document.documentElement.style;
+    if (PIE.mostrar === false) { r.setProperty("--pie-txt", "0px"); $("pieSired").style.display = "none"; return; }
+    r.setProperty("--pie-txt", Math.max(18, Number(PIE.alto) || 30) + "px");
+    if (PIE.texto) $("pieTxt").textContent = PIE.texto;
+  })();
 
   /* ---------- Fondo animado: rejilla en perspectiva + partículas ---------- */
   (function () {
@@ -397,7 +418,7 @@
       if (!W || !H) return;
       cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); cx.setTransform(DPR, 0, 0, DPR, 0, 0);
       trazos = []; pulsos = [];
-      var filas = Math.max(5, Math.round(H / 11));
+      var filas = Math.max(4, Math.round(H / 9));
       for (var r = 0; r < filas; r++) {
         var y = 4 + (H - 8) * r / (filas - 1), x = -10, pts = [[x, y]], col = COL[r % 3];
         while (x < W + 10) {
